@@ -76,7 +76,17 @@ class Transaction:
             elif (key == 'NOTES'):
                 self.notes = value
             elif (key == 'POINTS'):
-                self.points = int(value.replace(',',''))
+                # Gift trades have an icon in place of the point value, which
+                # shows up as:
+                #   <span class="icon icon-gift ">Gift</span>
+                # in the HTML. So before setting a point value, check if the
+                # trade was a gift
+                if ('Gift' in value):
+                    self.type = 'GIFT'
+                    self.points = 0
+                else:
+                    # Not a gift
+                    self.points = int(value.replace(',',''))
             elif (key == 'RUNNING'):
                 self.running_total = int(value.split('>')[-1].replace(',', ''))
             elif (key == 'RECEIVER'):
