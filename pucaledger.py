@@ -122,7 +122,7 @@ class Transaction:
                 '  %s (%i) -> %s (%i)\n' % (self.sender_name, self.sender_id, self.receiver_name, self.receiver_id) + \
                 '  %s for %i pp on %s at %s\n' % (self.card_name, self.points, self.date, self.time)
         elif(self.type == 'PUCASHIELD'):
-            return 'PUCASHIELD for %d' % self.points
+            return 'PUCASHIELD for %d\n' % self.points
 
 ## Connect to Pucatrade
 # \param[in] username Username as a string
@@ -177,7 +177,9 @@ def get_transactions(urls, payload, csvfilename):
                 )
 
                 for ttb in transaction_text_blocks:
-                    f.write(Transaction(ttb).csv_row())
+                    # Remove non-ASCII characters to prevent usernames
+                    # with unusual characters from causing a crash later
+                    f.write(Transaction(ttb.encode('ascii', 'ignore').decode('ascii')).csv_row())
 
 if __name__ == "__main__":
 
